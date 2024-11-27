@@ -23,7 +23,7 @@ import { config } from '../config/config';
         const resolvers = {
           Query: {
             // Map resolvers to use case
-            execute: (_, { query, params }) => useCase.execute(query, params),
+            execute: (_: any, { query, params }: any) => useCase.execute(query, params),
           },
         };
         return new GraphQLServer(typeDefs, resolvers, {});

@@ -8,6 +8,6 @@ export const config = {
     password: process.env.NEO4J_PASSWORD || 'Casablanca',
   },
   graphql: {
-    schemaPath: process.env.GRAPHQL_SCHEMA_PATH || './schema.graphql',
+    schemaPath: process.env.GRAPHQL_SCHEMA_PATH || './schema/schema.graphql',
   },
 };
