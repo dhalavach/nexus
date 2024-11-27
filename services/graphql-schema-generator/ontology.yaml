@@ -1,0 +1,298 @@
+# # mock LinkML ontology - replace
+
+# classes:
+#   Customer:
+#     attributes:
+#       id:
+#         range: string
+#         required: true
+#       name:
+#         range: string
+#       age:
+#         range: integer
+#       email:
+#         range: string
+#       is_active:
+#         range: boolean
+#   Order:
+#     attributes:
+#       order_id:
+#         range: string
+#         required: true
+#       customer_id:
+#         range: string
+#       total:
+#         range: decimal
+#       date:
+#         range: datetime
+
+
+id: oil-and-gas-equipment-ontology
+title: Oil and Gas Equipment Ontology
+description: An ontology for describing entities, equipment, and processes in the oil and gas industry. Partially based on how equipment is represented in the Canvas app.
+version: 2.1.0
+
+# Reusable types
+types:
+  FloatOrString:
+    description: "A type that can be either a float or a string."
+    typeof: any
+    union_of:
+      - float
+      - string
+  PercentType:
+    description: "A value representing a percentage, constrained between 0 and 100."
+    typeof: float
+    minimum_value: 0
+    maximum_value: 100
+  PositionDTO:
+    description: "A data transfer object type with two float properties."
+    typeof: object
+    properties:
+      x:
+        range: float
+        description: "X coordinate, the first float value."
+      y:
+        range: float
+        description: "Y coordinate, the second float value."
+
+#  Common mixins for metadata, positioning, and flow relationships
+mixins:
+  Metadata:
+    description: "Common metadata for all entities."
+    attributes:
+      id:
+        range: string
+        required: true
+      webid:
+        range: string
+        required: false
+      parent:
+        range: string
+        required: false
+      description:
+        range: string
+        required: false
+
+  Position:
+    description: "Position coordinates for entities on the Canvas application stage."
+    attributes:
+      position:
+        x:
+          description: "X-axis position"
+          range: float
+          required: true
+        y:
+          description: "Y-axis position"
+          range: float
+          required: true
+        range: PositionDTO
+
+  HasInput:
+    description: "Details about input flows to the entity."
+    attributes:
+      inputs:
+        range: string
+        multivalued: true
+        required: true
+
+  HasOutput:
+    description: "Details about output flows from the entity."
+    attributes:
+      outputs:
+        range: string
+        multivalued: true
+        required: true
+
+# Abstract classes for high-level categories
+abstract_classes:
+  Equipment:
+    mixins:
+      - Metadata
+      - Position
+    description: "An abstract base class for any equipment in the oil and gas industry."
+
+  Process:
+    mixins:
+      - Metadata
+      - Position
+      - HasInput
+      - HasOutput
+    description: "An abstract base class representing a process or operation in the oil and gas workflow."
+
+  Facility:
+    is_a: Equipment
+    description: "An abstract class representing a facility in the oil and gas sector."
+
+  MeasurementDevice:
+    is_a: Equipment
+    description: "A device that measures specific parameters like pressure, temperature, and flow rate."
+
+# Specific classes with attributes
+classes:
+  StorageTank:
+    is_a: Facility
+    description: "A tank used for storing oil, gas, or water."
+    attributes:
+      capacity:
+        range: FloatOrString
+        description: "Storage capacity of the tank, typically in barrels or cubic meters."
+        required: true
+      contents:
+        range: string
+        description: "Type of contents (e.g., oil, water, gas)."
+        required: false
+
+  Separator:
+    is_a: Process
+    description: "A device that separates gas, oil, and water from the production stream."
+    attributes:
+      pressure:
+        range: FloatOrString
+        description: "Operating pressure within the separator."
+        required: true
+      temperature:
+        range: FloatOrString
+        description: "Operating temperature within the separator."
+        required: true
+      separation_efficiency:
+        range: PercentType
+        description: "Efficiency of separation process in percentage."
+        required: false
+
+  GasWell:
+    is_a: Equipment
+    description: "An oil or gas well extracting hydrocarbons from a reservoir."
+    attributes:
+      pressure:
+        range: FloatOrString
+        description: "Wellhead pressure."
+        required: true
+      flow_rate:
+        range: FloatOrString
+        description: "Flow rate of gas or oil, typically in mcf/day or barrels per day."
+        required: true
+      depth:
+        range: float
+        description: "Depth of the well in meters."
+        required: false
+
+  Compressor:
+    is_a: Equipment
+    description: "An equipment that compresses gas to increase pressure for transportation or processing."
+    attributes:
+      inlet_pressure:
+        range: FloatOrString
+        description: "Pressure of gas at compressor inlet."
+        required: true
+      outlet_pressure:
+        range: FloatOrString
+        description: "Pressure of gas at compressor outlet."
+        required: true
+      power_consumption:
+        range: FloatOrString
+        description: "Power consumed by the compressor, typically in kW."
+        required: false
+
+  GasProcessingPlant:
+    is_a: Facility
+    description: "A facility where natural gas is processed to remove impurities and extract NGLs (Natural Gas Liquids)."
+    attributes:
+      throughput_capacity:
+        range: FloatOrString
+        description: "Capacity of the plant to process gas, typically in mcf/day."
+        required: true
+      ngl_recovery_rate:
+        range: PercentType
+        description: "Percentage of NGLs recovered during gas processing."
+        required: false
+
+  NGLFractionationUnit:
+    is_a: Process
+    description: "A process unit that separates NGLs into ethane, propane, butane, and other fractions."
+    attributes:
+      feed_rate:
+        range: FloatOrString
+        description: "Feed rate into the fractionation unit, typically in barrels per day."
+        required: true
+      ethane_recovery_rate:
+        range: PercentType
+        description: "Percentage of ethane recovered."
+        required: false
+      propane_recovery_rate:
+        range: PercentType
+        description: "Percentage of propane recovered."
+        required: false
+      reboiler_duty:
+        range: FloatOrString
+        description: "Heat duty of the reboiler, typically in BTU/hr or kW."
+        required: false
+
+  Sensor:
+    is_a: MeasurementDevice
+    description: "A sensor device that measures a physical property."
+    attributes:
+      sensor_type:
+        range: string
+        description: "Type of sensor (e.g., pressure, temperature, flow)."
+        required: true
+      reading:
+        range: FloatOrString
+        description: "Current reading of the sensor."
+        required: true
+      unit:
+        range: string
+        description: "Unit of the measurement (e.g., psi, °C, m3/h)."
+        required: true
+      accuracy:
+        range: PercentType
+        description: "Accuracy of the sensor measurement in percentage."
+        required: false
+
+  Pump:
+    is_a: Equipment
+    description: "A pump used to move fluids through the system."
+    attributes:
+      flow_rate:
+        range: FloatOrString
+        description: "Flow rate of the fluid, typically in m3/h or gallons per minute (GPM)."
+        required: true
+      power:
+        range: FloatOrString
+        description: "Power consumption of the pump, typically in kW."
+        required: false
+      discharge_pressure:
+        range: FloatOrString
+        description: "Pressure at pump discharge."
+        required: true
+
+# Units class for standardized measurement
+units:
+  PressureUnit:
+    description: "Unit for pressure measurement."
+    values:
+      - psi
+      - bar
+      - Pa
+      - MPa
+
+  TemperatureUnit:
+    description: "Unit for temperature measurement."
+    values:
+      - °C
+      - °F
+      - K
+
+  VolumeUnit:
+    description: "Unit for volume measurement."
+    values:
+      - barrel
+      - cubic_meter
+      - liter
+
+  FlowRateUnit:
+    description: "Unit for flow rate measurement."
+    values:
+      - m3/h
+      - bbl/day
+      - GPM
