@@ -8,6 +8,7 @@ export const config = {
   },
   graphql: {
     schemaPath: './src/schema/schema.graphql',
+    endpoint: 'http://localhost:4000'
   },
   kafka: {
     clientId: 'graphql-api',
