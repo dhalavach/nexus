@@ -1,5 +1,5 @@
 const { GraphQLScalarType, Kind, GraphQLError } = require('graphql');
-
+//custom resolver 
 const PercentType = new GraphQLScalarType({
   name: 'PercentType',
   description: 'Represents a percentage value as a float between 0 and 1 inclusive.',
