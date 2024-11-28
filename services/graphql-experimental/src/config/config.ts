@@ -3,11 +3,11 @@ dotenv.config();
 
 export const config = {
   neo4j: {
-    uri: process.env.NEO4J_URI || 'bolt://localhost:7687',
-    username: process.env.NEO4J_USERNAME || 'neo4j',
-    password: process.env.NEO4J_PASSWORD || 'Casablanca',
+    uri: 'bolt://localhost:7687',
+    username: 'neo4j',
+    password: 'Casablanca',
   },
   graphql: {
-    schemaPath: process.env.GRAPHQL_SCHEMA_PATH || './schema/schema.graphql',
+    schemaPath: './src/schema/schema.graphql',
   },
 };
