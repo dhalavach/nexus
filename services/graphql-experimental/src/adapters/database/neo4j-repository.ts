@@ -12,9 +12,13 @@ export class Neo4jRepository implements DatabasePort {
     const session = this.driver.session();
     try {
       const result = await session.run(query, params);
-      return result.records.map(record => record.toObject());
+      return result.records.map((record) => record.toObject());
     } finally {
       await session.close();
     }
+  }
+
+  getDriver(): any {
+    return this.driver;
   }
 }

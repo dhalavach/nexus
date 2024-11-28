@@ -1,6 +1,5 @@
-import dotenv from 'dotenv';
-dotenv.config();
-
+// import dotenv from 'dotenv';
+// dotenv.config();
 export const config = {
   neo4j: {
     uri: 'bolt://localhost:7687',
@@ -9,5 +8,9 @@ export const config = {
   },
   graphql: {
     schemaPath: './src/schema/schema.graphql',
+  },
+  kafka: {
+    clientId: 'graphql-api',
+    brokers: ['localhost:9092'],
   },
 };
